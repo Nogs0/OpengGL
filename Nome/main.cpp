@@ -9,19 +9,18 @@ GLfloat rot = 0;
 
 
 void Nome(){
-    glClear(GL_COLOR_BUFFER_BIT);
 
+    glClear(GL_COLOR_BUFFER_BIT);
+    //REDIMENSIONAMENTO
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(-6,6,-6,6);
+    gluOrtho2D(-3,3,-3,3);
 
     glScalef(escala, escala, 0);
+    //TRANSLAÇÃO
     glTranslatef(trans, trans1, 0);
-    glTranslatef(trans2,trans2, trans2);
-    glRotatef(rot, rot, rot,rot);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    //ROTAÇÃO
+    glRotatef(rot, 0, 0,1);
 
     glBegin(GL_LINES);
         glVertex2f(-0.55,0.4);
@@ -71,7 +70,8 @@ void listeningKey(unsigned char tecla, GLint x, GLint y){
     switch(tecla){
         case '+': escala++;
             break;
-        case '-': escala--;
+        case '-': if(escala>1)
+                    escala--;
             break;
         case 'd': trans++;
             break;
@@ -81,13 +81,9 @@ void listeningKey(unsigned char tecla, GLint x, GLint y){
             break;
         case 's': trans1--;
             break;
-        case 'e': trans2++;
+        case 'q': rot+=10;
             break;
-        case 'r': trans2--;
-            break;
-        case 'l': rot+=10;
-            break;
-        case 'k': rot-=10;
+        case 'e': rot-=10;
             break;
     }
     Nome();
@@ -99,6 +95,7 @@ int main(int argc, char *argv[]){
     glutCreateWindow("Hello Glut!");
     glutKeyboardFunc(listeningKey);
     glutDisplayFunc(Nome);
+    glClearColor(0,0,1,0);
     glutMainLoop();
     return 0;
 }

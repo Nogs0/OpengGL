@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1662406801 source:/home/joao/Desktop/Mouse/main.cpp
+1662411589 source:/home/joao/Desktop/JogoDaVelha/main.cpp
 	<GL/freeglut.h>
-	<iostream>
-	<stdlib.h>
 	<stdio.h>
-	<time.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
 
 1589025279 /usr/include/GL/freeglut.h
 	"freeglut_std.h"
@@ -101,23 +101,23 @@
 	<bits/floatn.h>
 	<bits/stdio-ldbl.h>
 
-1657149803 /usr/include/time.h
+1657149803 /usr/include/string.h
+	<bits/libc-header-start.h>
+	<stddef.h>
+	<bits/types/locale_t.h>
+	<strings.h>
+	<bits/string_fortified.h>
+
+1657149803 /usr/include/strings.h
 	<features.h>
 	<stddef.h>
-	<bits/time.h>
-	<bits/types/clock_t.h>
-	<bits/types/time_t.h>
-	<bits/types/struct_tm.h>
-	<bits/types/struct_timespec.h>
-	<bits/types/clockid_t.h>
-	<bits/types/timer_t.h>
-	<bits/types/struct_itimerspec.h>
 	<bits/types/locale_t.h>
+	<bits/strings_fortified.h>
 
-1662692938 source:/home/joao/Documents/OpenGL/OpengGL/Mouse/main.cpp
+1662695472 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
 	<GL/freeglut.h>
-	<iostream>
-	<stdlib.h>
 	<stdio.h>
-	<time.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
 
