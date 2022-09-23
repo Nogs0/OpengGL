@@ -18,9 +18,9 @@ void Nome(){
 
     glScalef(escala, escala, 0);
     //TRANSLAÇÃO
-    glTranslatef(trans, trans1, 0);
+    glTranslatef(0.3, trans1, 0);
     //ROTAÇÃO
-    glRotatef(rot, 0, 0,1);
+    glRotatef(rot, rot, 0,rot);
 
     glBegin(GL_LINES);
         glVertex2f(-0.55,0.4);

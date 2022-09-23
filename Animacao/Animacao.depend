@@ -1,7 +1,7 @@
 # depslib dependency file v1.0
-1662215750 source:/home/joao/Desktop/Nome/main.cpp
+1663901235 source:/home/joao/Documents/OpenGL/OpengGL/Animacao/main.cpp
 	<GL/freeglut.h>
-	<iostream>
+	<stdio.h>
 
 1589025279 /usr/include/GL/freeglut.h
 	"freeglut_std.h"
@@ -78,7 +78,23 @@
 1589025279 /usr/include/GL/freeglut_ext.h
 	<stdarg.h>
 
-1663717966 source:/home/joao/Documents/OpenGL/OpengGL/Nome/main.cpp
-	<GL/freeglut.h>
-	<iostream>
+1657149803 /usr/include/stdio.h
+	<bits/libc-header-start.h>
+	<stddef.h>
+	<stdarg.h>
+	<bits/types.h>
+	<bits/types/__fpos_t.h>
+	<bits/types/__fpos64_t.h>
+	<bits/types/__FILE.h>
+	<bits/types/FILE.h>
+	<bits/types/struct_FILE.h>
+	<bits/types/cookie_io_functions_t.h>
+	<stdarg.h>
+	<bits/stdio_lim.h>
+	<bits/floatn.h>
+	<bits/getopt_posix.h>
+	<bits/stdio.h>
+	<bits/stdio2.h>
+	<bits/floatn.h>
+	<bits/stdio-ldbl.h>
 

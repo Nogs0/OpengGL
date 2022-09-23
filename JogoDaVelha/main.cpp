@@ -3,23 +3,27 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string.h>
+#include <math.h>
+#define PI 3.1415926535898
 
 float x, y;
-char Game[9];
+char Game[3][3];
 int jogadas = 0;
-//coluna = primeiros dois dados da matriz
-struct
-{
-    float coluna [6] = {-0.45, -0.15, 0.15,  0.45};
+bool check = true;
+int posicao = -1;
+float colunas[3] = { 0.6, 0.0,-0.6};
 
-    float linha[6] = {  0.45,  0.15, -0.15, -0.45};
-} pontos;
-
+void draw();
+void drawO(float, float);
+void drawX(float, float, float, float, float);
 void Tabuleiro(void);
-int VerificaTabuleiro(float mousex, float mousey);
+int VerificaTabuleiro(int mousex, int mousey);
 void mouse(int button, int state, int mousex, int mousey);
+
+
 void FillGame();
 void imprimeJogo();
+
 int main(int argc, char *argv[])
 {
     FillGame();
@@ -30,17 +34,21 @@ int main(int argc, char *argv[])
     glutCreateWindow("Jogo da Velha");
     glutMouseFunc(mouse);
     glutDisplayFunc(Tabuleiro);
+    glClearColor(1,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glutMainLoop();
 
     return EXIT_SUCCESS;
 }
-void Tabuleiro(void)
+void Tabuleiro()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    gluOrtho2D(0,0,0,0);
 
+    glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
     glBegin(GL_LINES);
     glVertex2f(0.45, 0.15);
     glVertex2f(-0.45, 0.15);
@@ -53,81 +61,134 @@ void Tabuleiro(void)
     glVertex2f(-0.15, 0.45);
     glEnd();
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0.0,500,0.0,500);
-
+    draw();
     glFlush();
 }
 
-void FillGame(){
-    int i = 0;
-    for(i = 0; i<9; i++)
-        Game[i] = ' ';
-}
-int VerificaTabuleiro(float mousex, float mousey)
+void FillGame()
 {
-    mousey = mousey;
-    mousex = mousex;
+    int i, j;
+    for(i = 0; i<3; i++)
+        for(j=0; j <3; j++)
+            Game[i][j] = ' ';
+}
+void drawO(float w, float h)
+{
 
-    if(mousey < 210 && mousey > 140)
+    float ang, xx, yy;
+    glBegin(GL_LINE_LOOP);
+    for (int i = 0; i < 360; i++)
     {
-        jogadas++;
-        if(mousex < 210 && mousex > 145)
-            return 0;
-        if(mousex < 285 && mousex > 215)
-            return 1;
-        if(mousex < 360 && mousex > 290)
-            return 2;
+        ang = (i * PI) / 180.0;
+        xx =  w+ (cos(ang) * 0.15);
+        yy =  h+ (sin(ang) * 0.15);
+        glVertex2f(xx, yy);
     }
-    else if(mousey < 285 && mousey > 215)
+    glEnd();
+}
+
+void drawX(float n1, float n2, float n3, float n4, float FT)
+{
+    glBegin(GL_LINES);
+        glVertex2f(n1, n2);
+        glVertex2f(n3, n4);
+    glEnd();
+
+    glRotatef(180,0,1,0);
+    glTranslatef(FT,0,0);
+    glBegin(GL_LINES);
+        glVertex2f(n1, n2);
+        glVertex2f(n3, n4);
+    glEnd();
+}
+int VerificaTabuleiro(int mousex, int mousey)
+{
+
+    if(mousey < 210.00 && mousey > 140.00)
     {
         jogadas++;
-        if(mousex < 210 && mousex > 145)
-            return 3;
-        if(mousex < 285 && mousex > 215)
-            return 4;
-        if(mousex < 360 && mousex > 290)
-            return 5;
+        if(mousex < 210 && mousex > 145 && Game[0][0] == ' ')   return 0;
+        if(mousex < 285 && mousex > 215 && Game[0][1] == ' ')   return 1;
+        if(mousex < 360 && mousex > 290 && Game[0][2] == ' ')   return 2;
     }
-    else if(mousey < 360 && mousey > 290)
+    else if(mousey < 285 && mousey > 210)
     {
         jogadas++;
-        if(mousex < 210 && mousex > 145)
-            return 6;
-        if(mousex < 285 && mousex > 215)
-            return 7;
-        if(mousex < 360 && mousex > 290)
-            return 8;
+        if(mousex < 210 && mousex > 145 && Game[1][0] == ' ')   return 3;
+        if(mousex < 285 && mousex > 215 && Game[1][1] == ' ')   return 4;
+        if(mousex < 360 && mousex > 290 && Game[1][2] == ' ')   return 5;
+    }
+    else if(mousey < 360 && mousey > 285)
+    {
+        jogadas++;
+        if(mousex < 210 && mousex > 145 && Game[2][0] == ' ')   return 6;
+        if(mousex < 285 && mousex > 215 && Game[2][1] == ' ')   return 7;
+        if(mousex < 360 && mousex > 290 && Game[2][2] == ' ')   return 8;
     }
     return 9;
 }
 
 void mouse(int button, int state, int mousex, int mousey)
 {
-    int posicao;
-
-    if(button==GLUT_LEFT_BUTTON && state == GLUT_DOWN){
-    x = mousex;
-    y = (mousey);
+    if(button==GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        int linha = 0;
+        check = true;
+        x = mousex;
+        y = mousey;
         posicao = VerificaTabuleiro(x, y);
+        if(posicao <= 2){
+            if(Game[linha][posicao] == ' ')
+                (jogadas %2 != 0) ? Game[linha][posicao] = 'X' : Game[linha][posicao] = 'O';
+            else jogadas--;
+        }
+        else if(posicao <=5){
+            if(Game[linha][posicao] == ' ')
+                (jogadas %2 != 0) ? Game[linha][posicao] = 'X' : Game[linha][posicao] = 'O';
+            else jogadas--;
+        }
+        else if(posicao<=8){
+            if(Game[linha][posicao] == ' ')
+                (jogadas %2 != 0) ? Game[linha][posicao] = 'X': Game[linha][posicao] = 'O';
+            else jogadas--;
+        }
+
+        imprimeJogo();
+        Tabuleiro();
     }
-    if(posicao < 9){
-    if(Game[posicao] == ' '){
-        if(jogadas %2 != 0)
-            Game[posicao] = 'X';
-        else
-            Game[posicao] = 'O';
+    else if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+    {
+        check = false;
     }
-    else jogadas--;
-    imprimeJogo();
-    }
+    glutPostRedisplay();
 }
 
-void imprimeJogo(){
-    int i = 0;
-    for(i=0;i<9;i++){
-        printf("%c\n", Game[i]);
+void draw()
+{
+    if(check)
+    {
+        if(posicao == 0)        (jogadas %2 != 0) ? drawX(-0.45, 0.15,-0.15, 0.45, colunas[0]) : drawO(-0.3, 0.3);
+        else if(posicao == 1)   (jogadas %2 != 0) ? drawX(-0.15, 0.15, 0.15, 0.45, colunas[1]) : drawO( 0.0, 0.3);
+        else if(posicao == 2)   (jogadas %2 != 0) ? drawX( 0.15, 0.15, 0.45, 0.45, colunas[2]) : drawO( 0.3, 0.3);
+        else if(posicao == 3)   (jogadas %2 != 0) ? drawX(-0.45,-0.15,-0.15, 0.15, colunas[0]) : drawO(-0.3, 0.0);
+        else if(posicao == 4)   (jogadas %2 != 0) ? drawX(-0.15,-0.15, 0.15, 0.15, colunas[1]) : drawO( 0.0, 0.0);
+        else if(posicao == 5)   (jogadas %2 != 0) ? drawX( 0.15,-0.15, 0.45, 0.15, colunas[2]) : drawO( 0.3, 0.0);
+        else if(posicao == 6)   (jogadas %2 != 0) ? drawX(-0.45,-0.45,-0.15,-0.15, colunas[0]) : drawO(-0.3,-0.3);
+        else if(posicao == 7)   (jogadas %2 != 0) ? drawX(-0.15,-0.45, 0.15,-0.15, colunas[1]) : drawO( 0.0,-0.3);
+        else if(posicao == 8)   (jogadas %2 != 0) ? drawX( 0.15,-0.45, 0.45,-0.15, colunas[2]) : drawO( 0.3,-0.3);
     }
-
+}
+void imprimeJogo()
+{
+    int i, j;
+    for(i=0; i<3; i++)
+    {
+        for(j=0; j<3; j++)
+        {
+            printf(" %c ", Game[i][j]);
+            if(j<2) printf("|");
+        }
+        if(i<2) printf("\n-----------\n");
+    }
+    printf("\n\n\n");
 }
