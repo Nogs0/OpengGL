@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string.h>
 #include <math.h>
-#include<time.h>
 #define PI 3.1415926535898
 
 float x, y;
@@ -341,10 +340,5 @@ int VerificationD2()
     if(conf == 2)
         return 1;
     return 0;
-
-}
-
-void Playing()
-{
 
 }
