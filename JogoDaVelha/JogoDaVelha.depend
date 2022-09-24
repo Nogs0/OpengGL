@@ -114,13 +114,14 @@
 	<bits/types/locale_t.h>
 	<bits/strings_fortified.h>
 
-1663906607 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
+1663987830 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
 	<GL/freeglut.h>
 	<stdio.h>
 	<stdlib.h>
 	<iostream>
 	<string.h>
 	<math.h>
+	<time.h>
 
 1657149803 /usr/include/math.h
 	<bits/libc-header-start.h>
@@ -175,4 +176,17 @@
 	<bits/mathcalls-narrow.h>
 	<bits/mathcalls-narrow.h>
 	<bits/iscanonical.h>
+
+1657149803 /usr/include/time.h
+	<features.h>
+	<stddef.h>
+	<bits/time.h>
+	<bits/types/clock_t.h>
+	<bits/types/time_t.h>
+	<bits/types/struct_tm.h>
+	<bits/types/struct_timespec.h>
+	<bits/types/clockid_t.h>
+	<bits/types/timer_t.h>
+	<bits/types/struct_itimerspec.h>
+	<bits/types/locale_t.h>
 
