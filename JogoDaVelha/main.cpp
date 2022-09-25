@@ -13,6 +13,7 @@ bool check = true;
 int posicao = -1;
 float colunas[3] = { 0.6, 0.0,-0.6};
 
+void wins();
 void Draw(void);
 void drawplays();
 void drawO(float, float);
@@ -22,8 +23,12 @@ void LayoutFinal(char *aux);
 void mouse(int button, int state, int mousex, int mousey);
 
 int VerificaTabuleiro(int mousex, int mousey);
-int VerificaColuna();
-int VerificaLinha();
+int VerificaColuna0();
+int VerificaColuna1();
+int VerificaColuna2();
+int VerificaLinha0();
+int VerificaLinha1();
+int VerificaLinha2();
 int VerificationD1();
 int VerificationD2();
 void FillGame();
@@ -122,14 +127,68 @@ void Draw()
     glVertex2f(-0.15, -0.45);
     glVertex2f(-0.15, 0.45);
     glEnd();
-
-    drawplays();
-    if(win != 0){
+    if(VerificationD1() != 0){
         active = 0;
-        glClear(GL_COLOR_BUFFER_BIT);
+        glBegin(GL_LINES);
+        glVertex2f(-0.60, 0.60);
+        glVertex2f(0.60,-0.60);
     }
+    glEnd();
+    if(VerificationD2() != 0){
+        active = 0;
+        glBegin(GL_LINES);
+        glVertex2f(0.60, 0.60);
+        glVertex2f(-0.60,-0.60);
+    }
+    glEnd();
+    if(VerificaLinha0() != 0){
+        active = 0;
+        glBegin(GL_LINES);
+        glVertex2f(-0.60, 0.30);
+        glVertex2f(0.60, 0.30);
+    }
+    glEnd();
+    if(VerificaLinha1() != 0){
+        active = 0;
+        glBegin(GL_LINES);
+        glVertex2f(-0.60, 0.0);
+        glVertex2f(0.60, 0.0);
+    }
+    glEnd();
+    if(VerificaLinha2() != 0){
+        active = 0;
+        glBegin(GL_LINES);
+        glVertex2f(-0.60, -0.30);
+        glVertex2f(0.60, -0.30);
+    }
+    glEnd();
+    if(VerificaColuna0() != 0){
+        active = 0;
+        glBegin(GL_LINES);
+        glVertex2f(-0.30, 0.60);
+        glVertex2f(-0.30,-0.60);
+    }
+    glEnd();
+    if(VerificaColuna1() != 0){
+        active = 0;
+        glBegin(GL_LINES);
+        glVertex2f(0.0, 0.60);
+        glVertex2f(0.0,-0.60);
+    }
+    glEnd();
+    if(VerificaColuna2() != 0){
+        active = 0;
+        glBegin(GL_LINES);
+        glVertex2f(0.30, 0.60);
+        glVertex2f(0.30,-0.60);
+    }
+    glEnd();
+    drawplays();
+
     glFlush();
 }
+
+void wins(){}
 
 void FillGame()
 {
@@ -245,8 +304,12 @@ void mouse(int button, int state, int mousex, int mousey)
         (jogadas %2 != 0) ? Game[linha][posicao] = 'X' : Game[linha][posicao] = 'O';
         imprimeJogo();
         }
-        win += VerificaLinha();
-        win += VerificaColuna();
+        win += VerificaLinha0();
+        win += VerificaLinha1();
+        win += VerificaLinha2();
+        win += VerificaColuna0();
+        win += VerificaColuna1();
+        win += VerificaColuna2();
         win += VerificationD1();
         win += VerificationD2();
     }
@@ -281,9 +344,22 @@ void imprimeJogo()
     printf("\n\n\n");
 }
 
-int VerificaLinha()
+int VerificaLinha0()
 {
-    int i, j, conf = 0;
+    int i = 0, j, conf = 0;
+        for(j=0; j<2; j++)
+        {
+            if((!PlayValidation(i,j)) && Game[i][j] == Game[i][j+1])
+                conf++;
+            if(conf == 2)
+                return 1;
+        }
+    return 0;
+}
+
+int VerificaLinha1()
+{
+    int i=1, j, conf = 0;
 
     for(i = 0; i<3; i++)
     {
@@ -295,6 +371,19 @@ int VerificaLinha()
         if(conf == 2)
             return 1;
         conf = 0;
+    }
+    return 0;
+}
+
+int VerificaLinha2()
+{
+    int i=2, j, conf = 0;
+    for(j=0; j<2; j++)
+    {
+        if((!PlayValidation(i,j)) && Game[i][j] == Game[i][j+1])
+            conf++;
+        if(conf == 2)
+            return 1;
     }
     return 0;
 }
@@ -312,6 +401,43 @@ int VerificaColuna()
         if(conf == 2)
             return 1;
         conf = 0;
+    }
+    return 0;
+}
+
+int VerificaColuna0()
+{
+    int i = 0, j, conf = 0;
+    for(j=0; j<2; j++)
+    {
+        if((!PlayValidation(j,i)) && Game[j][i] == Game[j+1][i])
+            conf++;
+        if(conf == 2)
+            return 1;
+    }
+    return 0;
+}
+int VerificaColuna1()
+{
+    int i = 1, j, conf = 0;
+    for(j=0; j<2; j++)
+    {
+        if((!PlayValidation(j,i)) && Game[j][i] == Game[j+1][i])
+            conf++;
+        if(conf == 2)
+            return 1;
+    }
+    return 0;
+}
+int VerificaColuna2()
+{
+    int i = 2, j, conf = 0;
+    for(j=0; j<2; j++)
+    {
+        if((!PlayValidation(j,i)) && Game[j][i] == Game[j+1][i])
+            conf++;
+        if(conf == 2)
+            return 1;
     }
     return 0;
 }

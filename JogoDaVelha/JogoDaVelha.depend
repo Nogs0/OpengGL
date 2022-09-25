@@ -114,14 +114,13 @@
 	<bits/types/locale_t.h>
 	<bits/strings_fortified.h>
 
-1663987830 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
+1664058453 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
 	<GL/freeglut.h>
 	<stdio.h>
 	<stdlib.h>
 	<iostream>
 	<string.h>
 	<math.h>
-	<time.h>
 
 1657149803 /usr/include/math.h
 	<bits/libc-header-start.h>
