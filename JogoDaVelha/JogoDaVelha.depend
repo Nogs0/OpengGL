@@ -114,11 +114,10 @@
 	<bits/types/locale_t.h>
 	<bits/strings_fortified.h>
 
-1664058453 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
+1664162215 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
 	<GL/freeglut.h>
 	<stdio.h>
 	<stdlib.h>
-	<iostream>
 	<string.h>
 	<math.h>
 
