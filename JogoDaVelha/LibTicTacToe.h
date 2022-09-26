@@ -379,9 +379,8 @@ int VerificaLinha0()
         {
             if((!PlayValidation(i,j)) && Game[i][j] == Game[i][j+1])
                 conf++;
-            if(conf == 2){
-                (jogadas%2 != 0) ? push(Partidas, 1) : push(Partidas, 2);
-            }
+            if(conf == 2)
+                return 1;
         }
     return 0;
 }

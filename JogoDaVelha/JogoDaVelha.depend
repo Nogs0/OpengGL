@@ -114,12 +114,10 @@
 	<bits/types/locale_t.h>
 	<bits/strings_fortified.h>
 
-1664162215 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
+1664163373 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
 	<GL/freeglut.h>
 	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	<math.h>
+	"LibTicTacToe.h"
 
 1657149803 /usr/include/math.h
 	<bits/libc-header-start.h>
@@ -187,4 +185,11 @@
 	<bits/types/timer_t.h>
 	<bits/types/struct_itimerspec.h>
 	<bits/types/locale_t.h>
+
+1664163406 /home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/LibTicTacToe.h
+	<GL/freeglut.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<math.h>
 
