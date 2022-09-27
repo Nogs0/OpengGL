@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-
+    Begining();
     FillGame();
     glutInit(&argc, argv);
     glutInitWindowSize(500,500);
