@@ -1,3 +1,7 @@
+#ifndef CABECA_H_INCLUDED
+#define CABECA_H_INCLUDED
+
+#endif // CABECA_H_INCLUDED
 #include "LibTicTacToe.h"
 
 int main(int argc, char *argv[])
@@ -11,8 +15,8 @@ int main(int argc, char *argv[])
     glutMouseFunc(mouse);
     glutDisplayFunc(Draw);
     glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
     glutMainLoop();
 
     return 0;
 }
-

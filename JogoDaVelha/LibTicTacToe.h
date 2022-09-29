@@ -5,12 +5,17 @@
 #include <math.h>
 #define PI 3.1415926535898
 
-struct no
+typedef struct no
 {
-    char *winner;
+    char *dado;
     struct no *prox;
-};
-struct no *Partidas;
+} No;
+typedef struct
+{
+    struct no *inicio;
+    struct no *fim;
+} fila;
+
 struct Jogador{
     char Nome[30];
 };
@@ -19,16 +24,18 @@ char Game[3][3];
 int jogadas = 0, win = 0, active = 1, rodadas = 0;
 bool check = true;
 int posicao = -1;
+int sair = 0;
 float colunas[3] = { 0.6, 0.0,-0.6}, x, y;
-
+char Vencedor[30];
 void wins();
-void Draw(void);
+void Draw();
 void drawplays();
 void drawO(float, float);
 void drawX(float, float, float, float, float);
 void Layout();
 void Finish();
 void mouse(int button, int state, int mousex, int mousey);
+void Coluna(float x);
 
 int VerificaTabuleiro(int mousex, int mousey);
 int VerificaColuna0();
@@ -42,28 +49,12 @@ int VerificationD2();
 void FillGame();
 void imprimeJogo();
 
-struct no* push(struct no *topo, char *nome){
-    struct no* novo;
-    novo = (struct no*)malloc(sizeof(struct no));
-
-    if(novo){
-        novo->winner = nome;
-        novo->prox = topo;
-        return novo;
-    }
-    else{
-        printf("Não foi possível alocar memória para este nó");
-        return NULL;
-    }
-}
-
-struct no* pop(struct no **topo){
-    struct no *rem = NULL;
-    if(*topo){
-        rem = *topo;
-        *topo = rem->prox;
-    }
-    return rem;
+void DesenhaTextoStroke(char *aux)
+{
+    char *p;
+    p = aux;
+    while(*p)
+    glutStrokeCharacter(GLUT_STROKE_ROMAN,*p++);
 }
 
 void Layout()
@@ -128,39 +119,86 @@ void Begining(){
     scanf(" %29[^\n]", Player[1].Nome);
 
 }
-struct no *pilha = NULL;
+void Coluna(float x){
+    active = 0;
+    glBegin(GL_LINES);
+        glVertex2f(x, 0.60);
+        glVertex2f(x,-0.60);
+    glEnd();
+}
+void Linha(float y){
+    active = 0;
+    glBegin(GL_LINES);
+        glVertex2f(0.60, y);
+        glVertex2f(-0.60, y);
+    glEnd();
+}
 void Finish()
 {
-    active = 0;
-    struct no *Vencedor;
-    while((pilha) && check == true){
-        Vencedor = pop(&pilha);
-        printf("O vencedor foi: %s\n", Vencedor->winner);
-        rodadas--;
-        free(Vencedor);
+    char frase[30];
+    if(win!=0){
+        strcpy(frase, "O vencedor foi:");
     }
+    else{
+        strcpy(frase, "Deu velha...");
+    }
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, 500.0, 0, 500.0);
+
+    glColor3f(0,1,0);
+    glTranslatef(60,400,0);
+    glScalef(0.4,0.4,0.4);
+    glLineWidth(2);
+    DesenhaTextoStroke(frase);
+
+    glColor3f(0,1,1);
+    glTranslatef(-650,-220,0);
+    glScalef(1,1,1);
+    glLineWidth(2);
+    DesenhaTextoStroke(Vencedor);
+
+    glFlush();
+    active = 0;
+
 }
 void TryAgain()
 {
-    if(jogadas%2 != 0)
-        pilha = push(pilha, Player[0].Nome);
-    else
-        pilha = push(pilha, Player[1].Nome);
     glClear(GL_COLOR_BUFFER_BIT);
+    if(win != 0){
+    if(jogadas%2 != 0)
+        strcpy(Vencedor, Player[0].Nome);
+    else
+        strcpy(Vencedor, Player[1].Nome);
+    }
     FillGame();
     active = 1;
+    char frase[] = "Clique!";
 
-    //clique em qualquer lugar para continuar
+    glColor3f(0,1,0);
+    glTranslatef(0,0,0);
+    glScalef(0.5,0.5,0.5);
+    glLineWidth(3);
+    DesenhaTextoStroke(frase);
+
+    glFlush();
 
 }
 void Draw()
 {
+    if(posicao == 10)
+        TryAgain();
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0,0,0,0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
     Layout();
+    glLineWidth(4);
     glBegin(GL_LINES);
     glVertex2f(0.45, 0.15);
     glVertex2f(-0.45, 0.15);
@@ -172,6 +210,7 @@ void Draw()
     glVertex2f(-0.15, -0.45);
     glVertex2f(-0.15, 0.45);
     glEnd();
+
     if(VerificationD1() != 0)
     {
         active = 0;
@@ -191,66 +230,20 @@ void Draw()
     }
     glEnd();
     if(VerificaLinha0() != 0)
-    {
-        active = 0;
-        glBegin(GL_LINES);
-        glVertex2f(-0.60, 0.30);
-        glVertex2f(0.60, 0.30);
-    }
-    glEnd();
+        Linha(0.3);
     if(VerificaLinha1() != 0)
-    {
-        active = 0;
-        glBegin(GL_LINES);
-        glVertex2f(-0.60, 0.0);
-        glVertex2f(0.60, 0.0);
-    }
-    glEnd();
+        Linha(0.0);
     if(VerificaLinha2() != 0)
-    {
-        active = 0;
-        glBegin(GL_LINES);
-        glVertex2f(-0.60, -0.30);
-
-        glVertex2f(0.60, -0.30);
-
-    }
-    glEnd();
+        Linha(-0.3);
     if(VerificaColuna0() != 0)
-    {
-        active = 0;
-        glBegin(GL_LINES);
-        glVertex2f(-0.30, 0.60);
-        glVertex2f(-0.30,-0.60);
-    }
-    glEnd();
+        Coluna(-0.3);
     if(VerificaColuna1() != 0)
-    {
-        active = 0;
-        glBegin(GL_LINES);
-        glVertex2f(-0.0, 0.60);
-        glVertex2f(-0.0,-0.60);
-    }
-    glEnd();
+        Coluna(0.0);
     if(VerificaColuna2() != 0)
-    {
-        active = 0;
-        glBegin(GL_LINES);
-        glVertex2f(0.3, 0.60);
-        glVertex2f(0.3,-0.60);
-    }
-    glEnd();
+        Coluna(0.3);
     if(posicao == 9)
-    {
         Finish();
-    }
-    if(posicao == 10)
-    {
-        TryAgain();
-    }
     drawplays();
-
-
     glFlush();
 }
 
@@ -299,6 +292,7 @@ void drawX(float n1, float n2, float n3, float n4, float FT)
 }
 int VerificaTabuleiro(int mousex, int mousey)
 {
+    if(active == 1){
     if(mousey < 210.00 && mousey > 140.00)
     {
         if(mousex < 210 && mousex > 145 && PlayValidation(0,0))
@@ -353,11 +347,12 @@ int VerificaTabuleiro(int mousex, int mousey)
             return 8;
         }
     }
-    else if(mousey > 450 && mousey < 500){
+    }
+    if(mousey > 450 && mousey < 500){
         rodadas++;
-        if(mousex < 500 && mousex > 375)
-            return 9;
-        if(mousex > 0 && mousex < 125)
+    if(mousex < 500 && mousex > 375)
+        return 9;
+    else if(mousex > 0 && mousex < 125)
         return 10;
     }
     return 11;
