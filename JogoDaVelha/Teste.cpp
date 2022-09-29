@@ -1,3 +1,4 @@
+#include "Cabeca.h"
 #include <GL/freeglut.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,19 +6,9 @@
 #include <math.h>
 #define PI 3.1415926535898
 
-typedef struct no
-{
-    char *dado;
-    struct no *prox;
-} No;
-typedef struct
-{
-    struct no *inicio;
-    struct no *fim;
-} fila;
-
 struct Jogador{
     char Nome[30];
+    char Vitorias[30] = " ";
 };
 struct Jogador Player[2];
 char Game[3][3];
@@ -26,28 +17,7 @@ bool check = true;
 int posicao = -1;
 int sair = 0;
 float colunas[3] = { 0.6, 0.0,-0.6}, x, y;
-char Vencedor[30];
-void wins();
-void Draw();
-void drawplays();
-void drawO(float, float);
-void drawX(float, float, float, float, float);
-void Layout();
-void Finish();
-void mouse(int button, int state, int mousex, int mousey);
-void Coluna(float x);
-
-int VerificaTabuleiro(int mousex, int mousey);
-int VerificaColuna0();
-int VerificaColuna1();
-int VerificaColuna2();
-int VerificaLinha0();
-int VerificaLinha1();
-int VerificaLinha2();
-int VerificationD1();
-int VerificationD2();
-void FillGame();
-void imprimeJogo();
+struct Jogador Vencedor;
 
 void DesenhaTextoStroke(char *aux)
 {
@@ -112,7 +82,7 @@ void Layout()
     glVertex2f(x-1.25,-y+0.2);
     glEnd();
 }
-void Begining(){
+void Beginning(){
     printf("Player 1...\nEnter with your name: ");
     scanf(" %29[^\n]", Player[0].Nome);
     printf("Player 2...\nEnter with your name: ");
@@ -155,10 +125,22 @@ void Finish()
     DesenhaTextoStroke(frase);
 
     glColor3f(0,1,1);
+    glTranslatef(-630,-220,0);
+    glScalef(1,1,1);
+    glLineWidth(2);
+    DesenhaTextoStroke(Vencedor.Nome);
+
+    glColor3f(0,1,0);
+    glTranslatef(-500,-220,0);
+    glScalef(1,1,1);
+    glLineWidth(2);
+    DesenhaTextoStroke("VITORIAS:");
+
+    glColor3f(0,1,1);
     glTranslatef(-650,-220,0);
     glScalef(1,1,1);
     glLineWidth(2);
-    DesenhaTextoStroke(Vencedor);
+    DesenhaTextoStroke(Vencedor.Vitorias);
 
     glFlush();
     active = 0;
@@ -167,12 +149,6 @@ void Finish()
 void TryAgain()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    if(win != 0){
-    if(jogadas%2 != 0)
-        strcpy(Vencedor, Player[0].Nome);
-    else
-        strcpy(Vencedor, Player[1].Nome);
-    }
     FillGame();
     active = 1;
     char frase[] = "Clique!";
@@ -188,6 +164,7 @@ void TryAgain()
 }
 void Draw()
 {
+
     if(posicao == 10)
         TryAgain();
 
@@ -368,6 +345,7 @@ void mouse(int button, int state, int mousex, int mousey)
         x = mousex;
         y = mousey;
         posicao = VerificaTabuleiro(x, y);
+        Wins();
         if(active == 1)
         {
             (jogadas %2 != 0) ? Game[linha][posicao] = 'X' : Game[linha][posicao] = 'O';
@@ -536,4 +514,21 @@ int VerificationD2()
         return 1;
     return 0;
 
+}
+
+void Wins(){
+    if(win != 0){
+        if(jogadas%2 != 0){
+            strcpy(Vencedor.Nome, Player[0].Nome);
+            strcat(Player[0].Vitorias, " |");
+        }
+        else{
+            strcpy(Vencedor.Nome, Player[1].Nome);
+            strcat(Player[1].Vitorias, " |");
+        }
+    if(strcmp(Player[0].Vitorias, Player[1].Vitorias) > 0){
+        strcpy(Vencedor.Vitorias, Player[0].Vitorias);
+    }
+    else strcpy(Vencedor.Vitorias, Player[1].Vitorias);
+    }
 }

@@ -1,12 +1,9 @@
-#ifndef CABECA_H_INCLUDED
-#define CABECA_H_INCLUDED
-
-#endif // CABECA_H_INCLUDED
-#include "LibTicTacToe.h"
+#include "Cabeca.h"
+#include <GL/freeglut.h>
 
 int main(int argc, char *argv[])
 {
-    Begining();
+    Beginning();
     FillGame();
     glutInit(&argc, argv);
     glutInitWindowSize(500,500);
