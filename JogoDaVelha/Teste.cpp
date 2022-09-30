@@ -1,4 +1,5 @@
 #include "Cabeca.h"
+#include "Pilha.h"
 #include <GL/freeglut.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,16 +9,18 @@
 
 struct Jogador{
     char Nome[30];
-    char Vitorias[30] = " ";
 };
+
 struct Jogador Player[2];
 char Game[3][3];
-int jogadas = 0, win = 0, active = 1, rodadas = 0;
+int jogadas = 0, active = 1;
+int win= 0, turn = 0, rodadas = 0;
 bool check = true;
 int posicao = -1;
 int sair = 0;
 float colunas[3] = { 0.6, 0.0,-0.6}, x, y;
 struct Jogador Vencedor;
+Fila f;
 
 void DesenhaTextoStroke(char *aux)
 {
@@ -83,11 +86,11 @@ void Layout()
     glEnd();
 }
 void Beginning(){
+    criar(&f);
     printf("Player 1...\nEnter with your name: ");
     scanf(" %29[^\n]", Player[0].Nome);
     printf("Player 2...\nEnter with your name: ");
     scanf(" %29[^\n]", Player[1].Nome);
-
 }
 void Coluna(float x){
     active = 0;
@@ -105,19 +108,14 @@ void Linha(float y){
 }
 void Finish()
 {
+    No *aux;
+    printf("%d\n", turn);
     char frase[30];
-    if(win!=0){
-        strcpy(frase, "O vencedor foi:");
-    }
-    else{
-        strcpy(frase, "Deu velha...");
-    }
-
+    strcpy(frase, "O vencedor foi:");
     glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0, 500.0, 0, 500.0);
-
     glColor3f(0,1,0);
     glTranslatef(60,400,0);
     glScalef(0.4,0.4,0.4);
@@ -128,23 +126,10 @@ void Finish()
     glTranslatef(-630,-220,0);
     glScalef(1,1,1);
     glLineWidth(2);
+
     DesenhaTextoStroke(Vencedor.Nome);
 
-    glColor3f(0,1,0);
-    glTranslatef(-500,-220,0);
-    glScalef(1,1,1);
-    glLineWidth(2);
-    DesenhaTextoStroke("VITORIAS:");
-
-    glColor3f(0,1,1);
-    glTranslatef(-650,-220,0);
-    glScalef(1,1,1);
-    glLineWidth(2);
-    DesenhaTextoStroke(Vencedor.Vitorias);
-
-    glFlush();
     active = 0;
-
 }
 void TryAgain()
 {
@@ -160,11 +145,10 @@ void TryAgain()
     DesenhaTextoStroke(frase);
 
     glFlush();
-
 }
+
 void Draw()
 {
-
     if(posicao == 10)
         TryAgain();
 
@@ -188,38 +172,54 @@ void Draw()
     glVertex2f(-0.15, 0.45);
     glEnd();
 
+    if(posicao == 9){
+        Finish();
+    }
     if(VerificationD1() != 0)
     {
+        rodadas++;
         active = 0;
         glBegin(GL_LINES);
         glVertex2f(-0.60, 0.60);
         glVertex2f(0.60, -0.60);
-
+        glEnd();
     }
-    glEnd();
+
     if(VerificationD2() != 0)
     {
+        rodadas++;
         active = 0;
         glBegin(GL_LINES);
         glVertex2f(-0.60, -0.60);
         glVertex2f(0.60, 0.60);
-
+        glEnd();
     }
-    glEnd();
-    if(VerificaLinha0() != 0)
+
+    if(VerificaLinha(0) != 0){
+        rodadas++;
         Linha(0.3);
-    if(VerificaLinha1() != 0)
+    }
+    if(VerificaLinha(1) != 0){
+        rodadas++;
         Linha(0.0);
-    if(VerificaLinha2() != 0)
+    }
+    if(VerificaLinha(2) != 0){
+        rodadas++;
         Linha(-0.3);
-    if(VerificaColuna0() != 0)
+    }
+    if(VerificaColuna(0) != 0){
+        rodadas++;
         Coluna(-0.3);
-    if(VerificaColuna1() != 0)
+    }
+    if(VerificaColuna(1) != 0){
+        rodadas++;
         Coluna(0.0);
-    if(VerificaColuna2() != 0)
+    }
+    if(VerificaColuna(2) != 0){
+        rodadas++;
         Coluna(0.3);
-    if(posicao == 9)
-        Finish();
+    }
+
     drawplays();
     glFlush();
 }
@@ -240,7 +240,6 @@ int PlayValidation(int l, int c)
 }
 void drawO(float w, float h)
 {
-
     float ang, xx, yy;
     glBegin(GL_LINE_LOOP);
     for (int i = 0; i < 360; i++)
@@ -326,7 +325,6 @@ int VerificaTabuleiro(int mousex, int mousey)
     }
     }
     if(mousey > 450 && mousey < 500){
-        rodadas++;
     if(mousex < 500 && mousex > 375)
         return 9;
     else if(mousex > 0 && mousex < 125)
@@ -345,23 +343,29 @@ void mouse(int button, int state, int mousex, int mousey)
         x = mousex;
         y = mousey;
         posicao = VerificaTabuleiro(x, y);
-        Wins();
         if(active == 1)
         {
-            (jogadas %2 != 0) ? Game[linha][posicao] = 'X' : Game[linha][posicao] = 'O';
+            if(jogadas %2 != 0){
+                Game[linha][posicao] = 'X';
+                turn = 1;
+            }
+            else{
+                Game[linha][posicao] = 'O';
+                turn = 2;
+            }
             imprimeJogo();
         }
-        win += VerificaLinha0();
-        win += VerificaLinha1();
-        win += VerificaLinha2();
-        win += VerificaColuna0();
-        win += VerificaColuna1();
-        win += VerificaColuna2();
+        win += VerificaLinha(0);
+        win += VerificaLinha(1);
+        win += VerificaLinha(2);
+        win += VerificaColuna(0);
+        win += VerificaColuna(1);
+        win += VerificaColuna(2);
         win += VerificationD1();
         win += VerificationD2();
     } else if (state != GLUT_DOWN)
         check = false;
-
+    Wins();
     glutPostRedisplay();
 }
 
@@ -392,99 +396,30 @@ void imprimeJogo()
     printf("\n\n\n");
 }
 
-int VerificaLinha0()
+int VerificaLinha(int i)
 {
-    int i = 0, j, conf = 0;
+    int j, conf = 0;
     for(j=0; j<2; j++)
     {
         if((!PlayValidation(i,j)) && Game[i][j] == Game[i][j+1])
             conf++;
-        if(conf == 2)
+        if(conf == 2){
             return 1;
-    }
-    return 0;
-}
-
-int VerificaLinha1()
-{
-    int i=1, j, conf = 0;
-
-
-    for(j=0; j<2; j++)
-    {
-        if((!PlayValidation(i,j)) && Game[i][j] == Game[i][j+1])
-            conf++;
-        if(conf == 2)
-            return 1;
-    }
-
-
-    return 0;
-}
-
-int VerificaLinha2()
-{
-    int i=2, j, conf = 0;
-    for(j=0; j<2; j++)
-    {
-        if((!PlayValidation(i,j)) && Game[i][j] == Game[i][j+1])
-            conf++;
-        if(conf == 2)
-            return 1;
-    }
-    return 0;
-}
-
-int VerificaColuna()
-{
-    int i, j, conf = 0;
-    for(i = 0; i<3; i++)
-    {
-        for(j=0; j<2; j++)
-        {
-            if((!PlayValidation(j,i)) && Game[j][i] == Game[j+1][i])
-                conf++;
         }
-        if(conf == 2)
-            return 1;
-        conf = 0;
     }
     return 0;
 }
 
-int VerificaColuna0()
+int VerificaColuna(int i)
 {
-    int i = 0, j, conf = 0;
+    int j, conf = 0;
     for(j=0; j<2; j++)
     {
         if((!PlayValidation(j,i)) && Game[j][i] == Game[j+1][i])
             conf++;
-        if(conf == 2)
+        if(conf == 2){
             return 1;
-    }
-    return 0;
-}
-int VerificaColuna1()
-{
-    int i = 1, j, conf = 0;
-    for(j=0; j<2; j++)
-    {
-        if((!PlayValidation(j,i)) && Game[j][i] == Game[j+1][i])
-            conf++;
-        if(conf == 2)
-            return 1;
-    }
-    return 0;
-}
-int VerificaColuna2()
-{
-    int i = 2, j, conf = 0;
-    for(j=0; j<2; j++)
-    {
-        if((!PlayValidation(j,i)) && Game[j][i] == Game[j+1][i])
-            conf++;
-        if(conf == 2)
-            return 1;
+        }
     }
     return 0;
 }
@@ -497,8 +432,9 @@ int VerificationD1()
         if((!PlayValidation(i,i)) && Game[i][i] == Game[i+1][i+1])
             conf++;
     }
-    if(conf == 2)
-        return 1;
+    if(conf == 2){
+            return 1;
+    }
     return 0;
 }
 
@@ -510,25 +446,29 @@ int VerificationD2()
         if((!PlayValidation(i, j)) && Game[i][j] == Game[i-1][j+1])
             conf++;
     }
-    if(conf == 2)
+    if(conf == 2){
         return 1;
+    }
     return 0;
 
 }
 
 void Wins(){
-    if(win != 0){
-        if(jogadas%2 != 0){
-            strcpy(Vencedor.Nome, Player[0].Nome);
-            strcat(Player[0].Vitorias, " |");
+
+        if(win > 0)
+        {
+            rodadas++;
+
+            if(turn == 1)
+            {
+                push(&f, rodadas, Player[0].Nome);
+                strcpy(Vencedor.Nome, Player[0].Nome);
+            }
+            else if(turn == 2)
+            {
+                push(&f, rodadas, Player[1].Nome);
+                strcpy(Vencedor.Nome, Player[1].Nome);
+            }
         }
-        else{
-            strcpy(Vencedor.Nome, Player[1].Nome);
-            strcat(Player[1].Vitorias, " |");
-        }
-    if(strcmp(Player[0].Vitorias, Player[1].Vitorias) > 0){
-        strcpy(Vencedor.Vitorias, Player[0].Vitorias);
-    }
-    else strcpy(Vencedor.Vitorias, Player[1].Vitorias);
-    }
+
 }
