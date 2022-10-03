@@ -42,8 +42,6 @@
 			<Add directory="/usr/lib" />
 		</Linker>
 		<Unit filename="Cabeca.h" />
-		<Unit filename="Pilha.cpp" />
-		<Unit filename="Pilha.h" />
 		<Unit filename="Teste.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions />

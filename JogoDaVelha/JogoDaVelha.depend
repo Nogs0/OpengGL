@@ -114,9 +114,8 @@
 	<bits/types/locale_t.h>
 	<bits/strings_fortified.h>
 
-1664547560 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
+1664830378 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/main.cpp
 	"Cabeca.h"
-	"Pilha.h"
 	<GL/freeglut.h>
 
 1657149803 /usr/include/math.h
@@ -195,9 +194,8 @@
 
 1664546176 /home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Cabeca.h
 
-1664547539 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Teste.cpp
+1664830423 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Teste.cpp
 	"Cabeca.h"
-	"Pilha.h"
 	<GL/freeglut.h>
 	<stdio.h>
 	<stdlib.h>
@@ -209,5 +207,5 @@
 	<stdio.h>
 	"Pilha.h"
 
-1664546173 /home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Pilha.h
+1664830242 /home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Pilha.h
 

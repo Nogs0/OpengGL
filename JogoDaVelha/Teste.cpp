@@ -1,5 +1,4 @@
 #include "Cabeca.h"
-#include "Pilha.h"
 #include <GL/freeglut.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +19,6 @@ int posicao = -1;
 int sair = 0;
 float colunas[3] = { 0.6, 0.0,-0.6}, x, y;
 struct Jogador Vencedor;
-Fila f;
 
 void DesenhaTextoStroke(char *aux)
 {
@@ -86,7 +84,6 @@ void Layout()
     glEnd();
 }
 void Beginning(){
-    criar(&f);
     printf("Player 1...\nEnter with your name: ");
     scanf(" %29[^\n]", Player[0].Nome);
     printf("Player 2...\nEnter with your name: ");
@@ -108,7 +105,6 @@ void Linha(float y){
 }
 void Finish()
 {
-    No *aux;
     printf("%d\n", turn);
     char frase[30];
     strcpy(frase, "O vencedor foi:");
@@ -452,23 +448,15 @@ int VerificationD2()
     return 0;
 
 }
-
 void Wins(){
 
         if(win > 0)
         {
             rodadas++;
-
             if(turn == 1)
-            {
-                push(&f, rodadas, Player[0].Nome);
                 strcpy(Vencedor.Nome, Player[0].Nome);
-            }
             else if(turn == 2)
-            {
-                push(&f, rodadas, Player[1].Nome);
                 strcpy(Vencedor.Nome, Player[1].Nome);
-            }
         }
 
 }
