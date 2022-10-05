@@ -1,31 +1,29 @@
 #include "Cabeca.h"
 #include <GL/freeglut.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #define PI 3.1415926535898
 
-struct Jogador{
+struct Jogador
+{
     char Nome[30];
 };
 
 struct Jogador Player[2];
-char Game[3][3];
-int jogadas = 0, active = 1;
-int win= 0, turn = 0, rodadas = 0;
-bool check = true;
-int posicao = -1;
-int sair = 0;
-float colunas[3] = { 0.6, 0.0,-0.6}, x, y;
 struct Jogador Vencedor;
+char Game[3][3];
+int jogadas = 0, active = 1, win= 0, rodadas = 0;
+int posicao = -1;
+float colunas[3] = { 0.6, 0.0,-0.6}, x, y;
+
 
 void DesenhaTextoStroke(char *aux)
 {
     char *p;
     p = aux;
     while(*p)
-    glutStrokeCharacter(GLUT_STROKE_ROMAN,*p++);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN,*p++);
 }
 
 void Layout()
@@ -83,76 +81,76 @@ void Layout()
     glVertex2f(x-1.25,-y+0.2);
     glEnd();
 }
-void Beginning(){
+void Beginning()
+{
     printf("Player 1...\nEnter with your name: ");
     scanf(" %29[^\n]", Player[0].Nome);
     printf("Player 2...\nEnter with your name: ");
     scanf(" %29[^\n]", Player[1].Nome);
 }
-void Coluna(float x){
+void Coluna(float x)
+{
     active = 0;
     glBegin(GL_LINES);
-        glVertex2f(x, 0.60);
-        glVertex2f(x,-0.60);
+    glVertex2f(x, 0.60);
+    glVertex2f(x,-0.60);
     glEnd();
 }
-void Linha(float y){
+void Linha(float y)
+{
     active = 0;
     glBegin(GL_LINES);
-        glVertex2f(0.60, y);
-        glVertex2f(-0.60, y);
+    glVertex2f(0.60, y);
+    glVertex2f(-0.60, y);
     glEnd();
 }
 void Finish()
 {
-    printf("%d\n", turn);
-    char frase[30];
-    strcpy(frase, "O vencedor foi:");
-    glClear(GL_COLOR_BUFFER_BIT);
+    rodadas = 0;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0, 500.0, 0, 500.0);
     glColor3f(0,1,0);
-    glTranslatef(60,400,0);
-    glScalef(0.4,0.4,0.4);
+    glTranslatef(180,420,0);
+    glScalef(0.5,0.5,0.5);
     glLineWidth(2);
-    DesenhaTextoStroke(frase);
-
-    glColor3f(0,1,1);
-    glTranslatef(-630,-220,0);
-    glScalef(1,1,1);
-    glLineWidth(2);
-
     DesenhaTextoStroke(Vencedor.Nome);
-
-    active = 0;
+}
+void Velha()
+{
+    rodadas = 0;
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, 500.0, 0, 500.0);
+    glColor3f(0,1,0);
+    glTranslatef(155,400,0);
+    glScalef(0.3,0.3,0.3);
+    glLineWidth(2);
+    char v[] = "Deu velha";
+    DesenhaTextoStroke(v);
 }
 void TryAgain()
 {
+    rodadas = 0;
+    win = 0;
     glClear(GL_COLOR_BUFFER_BIT);
     FillGame();
     active = 1;
-    char frase[] = "Clique!";
-
-    glColor3f(0,1,0);
-    glTranslatef(0,0,0);
-    glScalef(0.5,0.5,0.5);
-    glLineWidth(3);
-    DesenhaTextoStroke(frase);
-
-    glFlush();
 }
 
 void Draw()
 {
-    if(posicao == 10)
+    Nomes();
+    if(posicao == 9 || posicao == 10)
         TryAgain();
+    if(win >= 1)
+        Finish();
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0,0,0,0);
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+
 
     Layout();
     glLineWidth(4);
@@ -168,12 +166,8 @@ void Draw()
     glVertex2f(-0.15, 0.45);
     glEnd();
 
-    if(posicao == 9){
-        Finish();
-    }
     if(VerificationD1() != 0)
     {
-        rodadas++;
         active = 0;
         glBegin(GL_LINES);
         glVertex2f(-0.60, 0.60);
@@ -183,7 +177,6 @@ void Draw()
 
     if(VerificationD2() != 0)
     {
-        rodadas++;
         active = 0;
         glBegin(GL_LINES);
         glVertex2f(-0.60, -0.60);
@@ -191,32 +184,24 @@ void Draw()
         glEnd();
     }
 
-    if(VerificaLinha(0) != 0){
-        rodadas++;
+    if(VerificaLinha(0) != 0)
         Linha(0.3);
-    }
-    if(VerificaLinha(1) != 0){
-        rodadas++;
+    if(VerificaLinha(1) != 0)
         Linha(0.0);
-    }
-    if(VerificaLinha(2) != 0){
-        rodadas++;
+    if(VerificaLinha(2) != 0)
         Linha(-0.3);
-    }
-    if(VerificaColuna(0) != 0){
-        rodadas++;
+    if(VerificaColuna(0) != 0)
         Coluna(-0.3);
-    }
-    if(VerificaColuna(1) != 0){
-        rodadas++;
+    if(VerificaColuna(1) != 0)
         Coluna(0.0);
-    }
-    if(VerificaColuna(2) != 0){
-        rodadas++;
+    if(VerificaColuna(2) != 0)
         Coluna(0.3);
-    }
 
+    if(win == 0 && rodadas == 9){
+        Velha();
+    }
     drawplays();
+    glLoadIdentity();
     glFlush();
 }
 
@@ -264,67 +249,78 @@ void drawX(float n1, float n2, float n3, float n4, float FT)
 }
 int VerificaTabuleiro(int mousex, int mousey)
 {
-    if(active == 1){
-    if(mousey < 210.00 && mousey > 140.00)
+    if(active == 1 && win == 0)
     {
-        if(mousex < 210 && mousex > 145 && PlayValidation(0,0))
+        if(mousey < 210.00 && mousey > 140.00)
         {
-            jogadas++;
-            return 0;
+            if(mousex < 210 && mousex > 145 && PlayValidation(0,0))
+            {
+                rodadas++;
+                jogadas++;
+                return 0;
+            }
+            if(mousex < 285 && mousex > 215 && PlayValidation(0,1))
+            {
+                rodadas++;
+                jogadas++;
+                return 1;
+            }
+            if(mousex < 360 && mousex > 290 && PlayValidation(0,2))
+            {
+                rodadas++;
+                jogadas++;
+                return 2;
+            }
         }
-        if(mousex < 285 && mousex > 215 && PlayValidation(0,1))
+        else if(mousey < 285 && mousey > 210)
         {
-            jogadas++;
-            return 1;
+            if(mousex < 210 && mousex > 145 && PlayValidation(1,0))
+            {
+                rodadas++;
+                jogadas++;
+                return 3;
+            }
+            if(mousex < 285 && mousex > 215 && PlayValidation(1,1))
+            {
+                rodadas++;
+                jogadas++;
+                return 4;
+            }
+            if(mousex < 360 && mousex > 290 && PlayValidation(1,2))
+            {
+                rodadas++;
+                jogadas++;
+                return 5;
+            }
         }
-        if(mousex < 360 && mousex > 290 && PlayValidation(0,2))
+        else if(mousey < 360 && mousey > 285)
         {
-            jogadas++;
-            return 2;
+            if(mousex < 210 && mousex > 145 && PlayValidation(2,0))
+            {
+                rodadas++;
+                jogadas++;
+                return 6;
+            }
+            if(mousex < 285 && mousex > 215 && PlayValidation(2,1))
+            {
+                rodadas++;
+                jogadas++;
+                return 7;
+            }
+            if(mousex < 360 && mousex > 290 && PlayValidation(2,2))
+            {
+                rodadas++;
+                jogadas++;
+                return 8;
+            }
         }
     }
-    else if(mousey < 285 && mousey > 210)
+    if(mousey > 450 && mousey < 500)
     {
-        if(mousex < 210 && mousex > 145 && PlayValidation(1,0))
-        {
-            jogadas++;
-            return 3;
-        }
-        if(mousex < 285 && mousex > 215 && PlayValidation(1,1))
-        {
-            jogadas++;
-            return 4;
-        }
-        if(mousex < 360 && mousex > 290 && PlayValidation(1,2))
-        {
-            jogadas++;
-            return 5;
-        }
-    }
-    else if(mousey < 360 && mousey > 285)
-    {
-        if(mousex < 210 && mousex > 145 && PlayValidation(2,0))
-        {
-            jogadas++;
-            return 6;
-        }
-        if(mousex < 285 && mousex > 215 && PlayValidation(2,1))
-        {
-            jogadas++;
-            return 7;
-        }
-        if(mousex < 360 && mousex > 290 && PlayValidation(2,2))
-        {
-            jogadas++;
-            return 8;
-        }
-    }
-    }
-    if(mousey > 450 && mousey < 500){
-    if(mousex < 500 && mousex > 375)
-        return 9;
-    else if(mousex > 0 && mousex < 125)
-        return 10;
+        if(mousex < 500 && mousex > 375)
+            return 9;
+        if(mousex < 125 && mousex > 0)
+            return 10;
     }
     return 11;
 
@@ -334,21 +330,17 @@ void mouse(int button, int state, int mousex, int mousey)
 {
     if(button==GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        check = true;
         int linha = 0;
         x = mousex;
         y = mousey;
         posicao = VerificaTabuleiro(x, y);
+        if(posicao != 11){
         if(active == 1)
         {
-            if(jogadas %2 != 0){
+            if(jogadas %2 != 0)
                 Game[linha][posicao] = 'X';
-                turn = 1;
-            }
-            else{
+            else
                 Game[linha][posicao] = 'O';
-                turn = 2;
-            }
             imprimeJogo();
         }
         win += VerificaLinha(0);
@@ -359,9 +351,8 @@ void mouse(int button, int state, int mousex, int mousey)
         win += VerificaColuna(2);
         win += VerificationD1();
         win += VerificationD2();
-    } else if (state != GLUT_DOWN)
-        check = false;
-    Wins();
+        }
+    }
     glutPostRedisplay();
 }
 
@@ -399,9 +390,8 @@ int VerificaLinha(int i)
     {
         if((!PlayValidation(i,j)) && Game[i][j] == Game[i][j+1])
             conf++;
-        if(conf == 2){
+        if(conf == 2)
             return 1;
-        }
     }
     return 0;
 }
@@ -413,9 +403,8 @@ int VerificaColuna(int i)
     {
         if((!PlayValidation(j,i)) && Game[j][i] == Game[j+1][i])
             conf++;
-        if(conf == 2){
+        if(conf == 2)
             return 1;
-        }
     }
     return 0;
 }
@@ -424,13 +413,10 @@ int VerificationD1()
 {
     int i, conf = 0;
     for(i = 0; i<2; i++)
-    {
         if((!PlayValidation(i,i)) && Game[i][i] == Game[i+1][i+1])
             conf++;
-    }
-    if(conf == 2){
-            return 1;
-    }
+    if(conf == 2)
+        return 1;
     return 0;
 }
 
@@ -438,25 +424,21 @@ int VerificationD2()
 {
     int i, j, conf = 0;
     for(j = 0, i = 2; j<2, i>0 ; j++, i--)
-    {
         if((!PlayValidation(i, j)) && Game[i][j] == Game[i-1][j+1])
             conf++;
-    }
-    if(conf == 2){
+    if(conf == 2)
         return 1;
-    }
     return 0;
 
 }
-void Wins(){
-
-        if(win > 0)
-        {
-            rodadas++;
-            if(turn == 1)
-                strcpy(Vencedor.Nome, Player[0].Nome);
-            else if(turn == 2)
-                strcpy(Vencedor.Nome, Player[1].Nome);
-        }
+void Nomes()
+{
+    if(win > 0)
+    {
+        if(jogadas%2 != 0)
+            strcpy(Vencedor.Nome, Player[0].Nome);
+        else
+            strcpy(Vencedor.Nome, Player[1].Nome);
+    }
 
 }

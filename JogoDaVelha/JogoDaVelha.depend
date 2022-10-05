@@ -192,13 +192,12 @@
 	<string.h>
 	<math.h>
 
-1664546176 /home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Cabeca.h
+1664935392 /home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Cabeca.h
 
-1664830423 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Teste.cpp
+1664999721 source:/home/joao/Documents/OpenGL/OpengGL/JogoDaVelha/Teste.cpp
 	"Cabeca.h"
 	<GL/freeglut.h>
 	<stdio.h>
-	<stdlib.h>
 	<string.h>
 	<math.h>
 

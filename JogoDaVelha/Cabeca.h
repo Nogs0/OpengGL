@@ -1,6 +1,7 @@
 #ifndef CABECA_H_INCLUDED
 #define CABECA_H_INCLUDED
-void Wins();
+void Nomes();
+void Velha();
 void Draw();
 void drawplays();
 void drawO(float, float);
